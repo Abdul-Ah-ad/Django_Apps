@@ -1,5 +1,8 @@
+import string
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+
 
 # ---------- Custom User Manager ----------
 class CustomUserManager(BaseUserManager):
@@ -34,6 +37,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []  # No other required fields
 
+    def save(self, *args, **kwargs):
+        # ✅ Remove punctuation from username, first_name, last_name
+        remove_punct = lambda s: ''.join(ch for ch in s if ch not in string.punctuation) if s else s
+
+        self.username = remove_punct(self.username)
+        self.first_name = remove_punct(self.first_name)
+        self.last_name = remove_punct(self.last_name)
+        
+        # ✅ Force email lowercase 
+        if self.email:
+            self.email = self.email.lower()
+
+        super().save(*args, **kwargs) 
+
+    
     def __str__(self):
         return self.email
 
