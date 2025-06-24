@@ -6,7 +6,7 @@ class SignupForm(UserCreationForm):
     bio = forms.CharField(widget=forms.Textarea, required=False)
     profile_picture = forms.ImageField(required=False)
 
-    class Meta: #rendering these fields
+    class Meta: 
         model = CustomUser
         fields = ['email', 'username', 'first_name', 'last_name', 'password1', 'password2']
 
@@ -14,7 +14,6 @@ class SignupForm(UserCreationForm):
         user = super().save(commit=False)
         if commit:
             user.save()
-            # Create associated profile
             Profile.objects.create(
                 user=user,
                 bio=self.cleaned_data.get('bio', ''),
@@ -32,7 +31,7 @@ class EditProfileForm(forms.ModelForm):
         fields = ['email', 'username', 'first_name', 'last_name']
 
     def __init__(self, *args, **kwargs):
-        # Expect profile instance passed in manually from view
+
         profile = kwargs.pop('profile', None)
         super().__init__(*args, **kwargs)
 

@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from .models import CustomUser, Profile
 
 # --- INIT SIGNALS ---
-@receiver(pre_init, sender=CustomUser)#decorators
+@receiver(pre_init, sender=CustomUser)
 def on_pre_init(sender, *args, **kwargs):
     print(f"[PRE_INIT] About to init {sender.__name__}")
 

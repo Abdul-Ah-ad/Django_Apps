@@ -16,10 +16,10 @@ def signup_view(request):
             if form.is_valid():
                 user = form.save()
                 login(request, user)
-                messages.success(request, "Account created successfully!")  # ✅ Added success message
+                messages.success(request, "Account created successfully!")  #  Added success message
                 return redirect('profile')
             else:
-                messages.error(request, "Please fix the errors below.")  # ✅ Inform user if form invalid
+                messages.error(request, "Please fix the errors below.")  #  Inform user if form invalid
         else:
             form = SignupForm()
         return render(request, 'accounts/signup.html', {'form': form})
@@ -37,7 +37,7 @@ def login_view(request):
                 login(request, user)
                 return redirect('profile')
             else:
-                messages.error(request, "Invalid logincredentials.")  # ✅ Inform user if form invalid
+                messages.error(request, "Invalid logincredentials.")  #  Inform user if form invalid
         else:
             form = AuthenticationForm()
         return render(request, 'accounts/login.html', {'form': form})

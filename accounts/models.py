@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 
 # ---------- Custom User Manager ----------
-class CustomUserManager(BaseUserManager):
+class CustomUserManager(BaseUserManager): #custom Authentication
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("Email must be provided")
@@ -29,23 +29,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    # Add this line checking squashing multiple migrations and visualizzze how actually things works and also for reverse migratons
     notes = models.TextField(blank=True, null=True)
 
-    objects = CustomUserManager()
+    objects = CustomUserManager() 
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []  # No other required fields
 
     def save(self, *args, **kwargs):
-        # ✅ Remove punctuation from username, first_name, last_name
+        # Remove punctuation from username, first_name, last_name
         remove_punct = lambda s: ''.join(ch for ch in s if ch not in string.punctuation) if s else s
 
         self.username = remove_punct(self.username)
         self.first_name = remove_punct(self.first_name)
         self.last_name = remove_punct(self.last_name)
         
-        # ✅ Force email lowercase 
+        # Force email lowercase 
         if self.email:
             self.email = self.email.lower()
 
