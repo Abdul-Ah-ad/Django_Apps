@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignupForm, EditProfileForm
+from .forms import SignupForm, EditProfileForm #created by me
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages  
+import logging
+
+logger = logging.getLogger(__name__)
 
 def signup_view(request):
     try:
@@ -33,6 +36,8 @@ def login_view(request):
                 user = form.get_user()
                 login(request, user)
                 return redirect('profile')
+            else:
+                messages.error(request, "Invalid logincredentials.")  # ✅ Inform user if form invalid
         else:
             form = AuthenticationForm()
         return render(request, 'accounts/login.html', {'form': form})
@@ -44,31 +49,35 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-@login_required
+@login_required#protected 
 def profile_view(request):
-    return render(request, 'accounts/profile.html')
+    messages.success(request, "You have been logged out.")
+    return render(request, 'accounts/profile.html', {
+        'user': request.user,
+        'profile': getattr(request.user, 'profile', None),
+    })
 
 @login_required
 def edit_profile_view(request):
-    try:
-        user = request.user
-        profile = user.profile
+    user = request.user
+    profile = getattr(user, 'profile', None)
 
-        if request.method == 'POST':
-            form = EditProfileForm(request.POST, request.FILES, instance=user, profile=profile)
-            if form.is_valid():
-                form.save(user, profile)  # ✅ Use the new save method that handles both
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, request.FILES, instance=user, profile=profile)
+        if form.is_valid():
+            try:
+                form.save(user, profile)
                 messages.success(request, 'Profile updated successfully.')
                 return redirect('profile')
+            except Exception as e:
+                logger.exception("Error during profile update")
+                messages.error(request, "An unexpected error occurred. Please try again.")
         else:
-            form = EditProfileForm(instance=user, profile=profile)
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = EditProfileForm(instance=user, profile=profile)
 
-        return render(request, 'accounts/edit_profile.html', {
-            'form': form,
-            'profile': profile
-        })
-    except Exception as e:
-        messages.error(request, f"Error updating profile: {e}")
-        return redirect('edit_profile')
-
-
+    return render(request, 'accounts/edit_profile.html', {
+        'form': form,
+        'profile': profile
+    })

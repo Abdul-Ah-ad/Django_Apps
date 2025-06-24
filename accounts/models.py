@@ -26,6 +26,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
+    # Add this line checking squashing multiple migrations and visualizzze how actually things works and also for reverse migratons
+    notes = models.TextField(blank=True, null=True)
 
     objects = CustomUserManager()
 

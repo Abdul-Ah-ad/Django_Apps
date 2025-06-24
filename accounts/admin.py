@@ -5,4 +5,4 @@ from django.contrib.admin.sites import AlreadyRegistered
 try:
     admin.site.register(Profile)
 except AlreadyRegistered:
-    pass
+    pass # guards against the admin double registeration 

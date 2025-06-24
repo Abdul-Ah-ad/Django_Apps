@@ -6,15 +6,12 @@ class SignupForm(UserCreationForm):
     bio = forms.CharField(widget=forms.Textarea, required=False)
     profile_picture = forms.ImageField(required=False)
 
-    class Meta:
+    class Meta: #rendering these fields
         model = CustomUser
         fields = ['email', 'username', 'first_name', 'last_name', 'password1', 'password2']
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
         if commit:
             user.save()
             # Create associated profile
@@ -44,10 +41,7 @@ class EditProfileForm(forms.ModelForm):
             self.fields['profile_picture'].initial = profile.profile_picture
 
     def save(self, user, profile, commit=True):
-        user.email = self.cleaned_data['email']
-        user.username = self.cleaned_data['username']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
+        user = super().save(commit=False)
 
         profile.bio = self.cleaned_data['bio']
         if self.cleaned_data.get('profile_picture'):
