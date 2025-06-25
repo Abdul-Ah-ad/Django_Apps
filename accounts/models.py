@@ -19,7 +19,7 @@ class CustomUserManager(BaseUserManager):  # Custom Authentication
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
 
-# ---------- Custom QuerySet ----------
+# ---------- Custom QuerySet ---------- active_user and staff
 class CustomUserQuerySet(models.QuerySet):
     def active(self):
         return self.filter(is_active=True)

@@ -5,6 +5,9 @@ from django.contrib import messages
 from .forms import SignupForm, EditProfileForm #created by me
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages  
+    
+from django.http import JsonResponse
+from accounts.models import CustomUser
 import logging
 
 logger = logging.getLogger(__name__)
@@ -81,3 +84,10 @@ def edit_profile_view(request):
         'form': form,
         'profile': profile
     })
+
+
+def user_list(request):
+    data = list(CustomUser.objects.values('id', 'email', 'username'))
+    return JsonResponse(data, safe=False)
+
+    
