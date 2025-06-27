@@ -1,6 +1,7 @@
 import string
 
 from django.db import models
+from django.utils.text import slugify
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
@@ -21,6 +22,8 @@ class CustomUserManager(BaseUserManager): #custom Authentication
         return self.create_user(email, password, **extra_fields)
 
 # ---------- Custom User Model ----------
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=150, null=True, blank=True)
@@ -31,28 +34,38 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(blank=True, null=True)
 
+    # 🆕 Auto-generated field
+# models.py
+
+    user_code = models.CharField(max_length=50, unique=True)
+
+
     objects = CustomUserManager() 
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []  # No other required fields
+    REQUIRED_FIELDS = []
 
     def save(self, *args, **kwargs):
-        # Remove punctuation from username, first_name, last_name
         remove_punct = lambda s: ''.join(ch for ch in s if ch not in string.punctuation) if s else s
 
         self.username = remove_punct(self.username)
         self.first_name = remove_punct(self.first_name)
         self.last_name = remove_punct(self.last_name)
         
-        # Force email lowercase 
         if self.email:
             self.email = self.email.lower()
 
-        super().save(*args, **kwargs) 
+        # 🆕 Auto-generate user_code if not set
+        if not self.user_code:
+            base = slugify(self.username or self.email.split('@')[0])
+            count = CustomUser.objects.filter(user_code__startswith=base).count()
+            self.user_code = f"{base}-{count + 1}"
 
-    
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.email
+
 
 # ---------- Profile Model ----------
 class Profile(models.Model):

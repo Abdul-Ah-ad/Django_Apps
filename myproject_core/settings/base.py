@@ -20,6 +20,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.middleware.BlockBannedEmailsMiddleware',
+    'accounts.middleware.LogLastActivityMiddleware',
+    'accounts.middleware.CustomAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject_core.urls'
