@@ -27,3 +27,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Optional for API testing
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
+

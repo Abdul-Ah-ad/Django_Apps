@@ -1,85 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+{% extends 'accounts/base.html' %}
 
-        .login-container {
-            background: white;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
+{% block title %}Login{% endblock %}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+{% block extra_css %}
+<style>
+    body {
+        background: #f7f7f7;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
+    .login-container {
+        background: white;
+        padding: 30px 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
 
-        form p {
-            margin-bottom: 15px;
-        }
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
 
-        button[type="submit"] {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+    form p {
+        margin-bottom: 15px;
+    }
 
-        button[type="submit"]:hover {
-            background-color: #45a049;
-        }
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
 
-        .links {
-            text-align: center;
-            margin-top: 15px;
-        }
+    button[type="submit"] {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
 
-        .admin-button {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 12px;
-            background-color: #333;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 14px;
-        }
+    button[type="submit"]:hover {
+        background-color: #45a049;
+    }
 
-        .admin-button:hover {
-            background-color: #555;
-        }
-    </style>
-</head>
-<body>
+    .links {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .admin-button {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 12px;
+        background-color: #333;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .admin-button:hover {
+        background-color: #555;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
 <div class="login-container">
     <h2>Login</h2>
     <form method="post">
@@ -93,5 +93,6 @@
         <a href="/admin/" class="admin-button">Go to Admin Panel</a>
     </div>
 </div>
-</body>
-</html>
+
+{% endblock %}
+

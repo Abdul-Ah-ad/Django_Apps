@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django.contrib.admin import StackedInline
-from .models import Profile, CustomUser
-from django.contrib.auth.admin import UserAdmin
 from django.contrib.admin.sites import AlreadyRegistered
+from django.contrib.auth.admin import UserAdmin
 from django.utils.crypto import get_random_string
+
+from .models import CustomUser, Profile
+
 
 class ProfileInline(StackedInline):
     model = Profile
@@ -40,14 +42,7 @@ class CustomUserAdmin(UserAdmin):
             obj.user_code = get_random_string(8)
         super().save_model(request, obj, form, change)
 
-# Register Profile
-try:
-    admin.site.register(Profile)
-except AlreadyRegistered:
-    pass
 
-# Register CustomUser
-try:
-    admin.site.register(CustomUser, CustomUserAdmin)
-except AlreadyRegistered:
-    pass
+admin.site.register(Profile)
+admin.site.register(CustomUser, CustomUserAdmin)
+

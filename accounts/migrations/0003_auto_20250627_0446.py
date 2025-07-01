@@ -1,5 +1,6 @@
 from django.db import migrations
 
+
 def set_notes_for_existing_users(apps, schema_editor):
     CustomUser = apps.get_model('accounts', 'CustomUser')
     for user in CustomUser.objects.all():
@@ -14,6 +15,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # Temporarily disable this to avoid issues while resetting/fixing migrations
-        # migrations.RunPython(set_notes_for_existing_users),
     ]
+
