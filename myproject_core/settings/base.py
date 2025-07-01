@@ -21,8 +21,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.BlockBannedEmailsMiddleware',
-    'accounts.middleware.LogLastActivityMiddleware',
-    'accounts.middleware.CustomAuthMiddleware',
+    'accounts.middleware.LogLastActivityMiddleware',#added
+    'accounts.middleware.CustomAuthMiddleware',#added by me
 ]
 
 ROOT_URLCONF = 'myproject_core.urls'
@@ -73,3 +73,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/accounts/profile/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'

@@ -1,6 +1,7 @@
 from django.http import HttpResponseForbidden
 from django.utils.timezone import now
-    
+ 
+from django.conf import settings   
 from django.shortcuts import redirect
 
 class BlockBannedEmailsMiddleware:
@@ -39,7 +40,15 @@ class CustomAuthMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if not request.user.is_authenticated and not request.path.startswith('/admin/'):
-            return redirect('/admin/login/')
+        # Allow unauthenticated access to login, signup, and static/admin pages
+        allowed_paths = [
+            settings.LOGIN_URL,
+            '/accounts/signup/',
+            '/admin/',
+            '/static/',
+        ]
+        if not request.user.is_authenticated and not any(request.path.startswith(p) for p in allowed_paths):
+            return redirect(settings.LOGIN_URL)
+        
         return self.get_response(request)
 
