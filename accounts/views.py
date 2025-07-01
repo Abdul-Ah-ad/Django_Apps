@@ -51,7 +51,6 @@ def logout_view(request):
 
 @login_required#protected 
 def profile_view(request):
-    messages.success(request, "You have been logged out.")
     return render(request, 'accounts/profile.html', {
         'user': request.user,
         'profile': getattr(request.user, 'profile', None),
