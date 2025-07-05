@@ -9,6 +9,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -19,6 +20,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.middleware.BlockBannedEmailsMiddleware',
+    'accounts.middleware.LogLastActivityMiddleware',
+    'accounts.middleware.CustomAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject_core.urls'
@@ -40,7 +44,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myproject_core.wsgi.application'
 
-# Don't define DATABASES, DEBUG, SECRET_KEY here — override in local.py
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -67,4 +70,14 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/accounts/profile/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 

@@ -21,6 +21,7 @@ db.sqlite3
 # Static and media files
 /static/
 media/
+profiles/
 staticfiles/
 *.collectstatic/
 
@@ -38,11 +39,6 @@ secrets.json
 # OS system files
 .DS_Store
 Thumbs.db
-
-# Migrations (optional if you don’t want to track initially)
-**/migrations/
-**/migrations/*.pyc
-**/migrations/__pycache__/
 
 # Coverage and test results
 htmlcov/
