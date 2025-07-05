@@ -7,23 +7,49 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseServerError
 from django.shortcuts import redirect, render
 
-from .forms import EditProfileForm, SignupForm
+from accounts.forms import EditProfileForm, SignupForm
 
 logger = logging.getLogger(__name__)
 
-def signup_view(request):
+def handle_form(request, form_class, template_name, success_url, success_message, *,
+                instance=None, extra_context=None, commit_callback=None, **form_kwargs):
     if request.method == 'POST':
-        form = SignupForm(request.POST, request.FILES)
+        form = form_class(request.POST, request.FILES, instance=instance, **form_kwargs)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Account created successfully!')
-            return redirect('profile')
+            try:
+                if commit_callback:
+                    commit_callback(form)
+                else:
+                    form.save()
+                messages.success(request, success_message)
+                return redirect(success_url)
+            except ValueError as ve:
+                logger.warning(f"Validation error: {ve}")
+                messages.error(request, f"Validation error: {ve}")
+            except Exception as e:
+                logger.exception('Unexpected error during form processing')
+                return HttpResponseServerError("An unexpected error occurred.")
         else:
             messages.error(request, "Please fix the errors below.")
     else:
-        form = SignupForm()
-    return render(request, 'accounts/signup.html', {'form': form})
+        form = form_class(instance=instance, **form_kwargs)
+
+    context = {'form': form}
+    if extra_context:
+        context.update(extra_context)
+
+    return render(request, template_name, context)
+
+
+
+def signup_view(request):
+    return handle_form(
+        request,
+        form_class=SignupForm,
+        template_name='accounts/signup.html',
+        success_url='profile',
+        success_message='Account created successfully!',
+    )
 
 
 def login_view(request):
@@ -58,25 +84,17 @@ def edit_profile_view(request):
     user = request.user
     profile = getattr(user, 'profile', None)
 
-    if request.method == 'POST':
-        form = EditProfileForm(request.POST, request.FILES, instance=user, profile=profile)
-        if form.is_valid():
-            try:
-                form.save(user, profile)
-                messages.success(request, 'Profile updated successfully.')
-                return redirect('profile')
-            except ValueError as ve:
-                logger.warning(f"Validation error during profile update: {ve}")
-                messages.error(request, f"Validation error: {ve}")
-            except Exception as e:
-                logger.exception('Unexpected error during profile update')
-                return HttpResponseServerError("An unexpected error occurred.")
-        else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        form = EditProfileForm(instance=user, profile=profile)
+    def save_form(form):
+        form.save(user, profile)
 
-    return render(request, 'accounts/edit_profile.html', {
-        'form': form,
-        'profile': profile
-    })
+    return handle_form(
+        request,
+        form_class=EditProfileForm,
+        template_name='accounts/edit_profile.html',
+        success_url='profile',
+        success_message='Profile updated successfully.',
+        instance=user,
+        form_kwargs={'profile': profile},
+        extra_context={'profile': profile},
+        commit_callback=save_form
+    )
